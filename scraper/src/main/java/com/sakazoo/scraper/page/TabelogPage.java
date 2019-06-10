@@ -1,11 +1,16 @@
 package com.sakazoo.scraper.page;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class TabelogPage {
+
+  public SelenideElement count() {
+    return $(".c-page-count");
+  }
 
   public ElementsCollection results() {
     return $$(".list-rst");
