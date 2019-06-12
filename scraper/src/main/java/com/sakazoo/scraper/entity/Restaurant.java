@@ -2,36 +2,47 @@ package com.sakazoo.scraper.entity;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import javax.persistence.*;
+
 /**
  * 店舗情報
  * 
  * @author sakazoo
  */
+@Entity
+@Table(name="restaurant")
 public class Restaurant {
 
   // 連番
-  private int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   // 店名
+  @Column
   private String name;
 
   // 店舗URL
+  @Column
   private String url;
 
   // 最寄り駅
+  @Column
   private String station;
 
   // スター評価
+  @Column
   private Double score;
 
   // レビュー件数
+  @Column
   private int reviews;
 
-  public int getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
