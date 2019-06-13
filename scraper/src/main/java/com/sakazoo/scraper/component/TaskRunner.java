@@ -17,8 +17,7 @@ public class TaskRunner {
   private int i = 0;
   private static final DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-  //  @Scheduled(cron = "${cron.cron1}")
-  @Scheduled(initialDelay=0, fixedDelay=60000)
+  @Scheduled(cron = "${cron.cron1}")
   public void execute() {
     LocalDateTime dateTime = LocalDateTime.now();
     System.out.println("データ収集開始: " + dateTime.format(f));

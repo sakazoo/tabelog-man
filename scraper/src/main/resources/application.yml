@@ -1,6 +1,7 @@
 # 秒/分/時/日/月/曜日
+# 毎月1日に実行させる
 cron:
-  cron1: 0 * * * * *
+  cron1: 0 0 1 * * *
 
 # DBは環境変数から設定 例)DB_USERNAME=username
 spring:
