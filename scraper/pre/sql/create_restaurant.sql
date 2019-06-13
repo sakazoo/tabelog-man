@@ -5,4 +5,5 @@ CREATE TABLE `tabelogdb`.`restaurant` (
   `station` VARCHAR(45) NOT NULL,
   `score` DOUBLE NULL,
   `reviews` INT NULL,
+  `register_date` DATE NULL,
   PRIMARY KEY (`id`));
