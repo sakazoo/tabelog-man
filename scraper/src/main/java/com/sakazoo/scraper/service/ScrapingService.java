@@ -67,7 +67,7 @@ public class ScrapingService {
     Restaurant restaurant = new Restaurant();
     restaurant.setName(element.find(By.tagName("a")).innerText());
     restaurant.setUrl(element.find(By.tagName("a")).getAttribute("href"));
-    String station = element.find(By.className("list-rst__area-genre")).innerText().split("駅")[0];
+    String station = element.find(By.className("list-rst__area-genre")).innerText().split("駅")[0].strip();
     restaurant.setStation(station);
     // 評価0件の場合はHTML要素が取得できないため条件分岐
     if(element.find(By.className("c-rating__val--strong")).exists()){
