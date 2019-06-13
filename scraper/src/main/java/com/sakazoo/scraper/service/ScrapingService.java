@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -39,20 +39,21 @@ public class ScrapingService {
 
   public void scrapeTabelog(){
     // TODO: 全データを取得すると時間がかかるので最終ページのみ取得
-    TabelogPage tabelogPage = open("https://tabelog.com/tokyo/rstLst/gyouza/60/", TabelogPage.class);
+    TabelogPage tabelogPage = open("https://tabelog.com/tokyo/rstLst/gyouza/", TabelogPage.class);
     ElementsCollection elements = tabelogPage.results();
     List<Restaurant> restaurantList = new ArrayList<>();
     logger.info(tabelogPage.count().innerText());
+    Date date = new Date();
     // 表示画面1ページ内に掲載されている全ての店情報を取得
     for (SelenideElement element :elements ) {
-      Restaurant restaurant = createRestaurant(element);
+      Restaurant restaurant = createRestaurant(element, date);
       restaurantList.add(restaurant);
     }
     while(tabelogPage.hasNextPage()){
       elements = tabelogPage.nextResults();
       logger.info(tabelogPage.count().innerText());
       for (SelenideElement element :elements ) {
-        Restaurant restaurant = createRestaurant(element);
+        Restaurant restaurant = createRestaurant(element, date);
         restaurantList.add(restaurant);
       }
     }
@@ -62,7 +63,7 @@ public class ScrapingService {
     }
   }
 
-  private Restaurant createRestaurant(SelenideElement element){
+  private Restaurant createRestaurant(SelenideElement element, Date date){
     Restaurant restaurant = new Restaurant();
     restaurant.setName(element.find(By.tagName("a")).innerText());
     restaurant.setUrl(element.find(By.tagName("a")).getAttribute("href"));
@@ -74,12 +75,18 @@ public class ScrapingService {
       Double score = Double.parseDouble(scoreStr);
       restaurant.setScore(score);
       String reviewsStr = element.find(By.className("list-rst__rvw-count-num")).innerText();
-      int reviews = Integer.parseInt(reviewsStr);
+      int reviews = 0;
+      try {
+        reviews = Integer.parseInt(reviewsStr);
+      } catch (NumberFormatException e) {
+        // レビュー件数0件の場合は"-"件となり変換できないため初期値0とする
+      }
       restaurant.setReviews(reviews);
     } else{
       restaurant.setScore(null);
       restaurant.setReviews(0);
     }
+    restaurant.setRegisterDate(date);
     logger.info(restaurant.toString());
     return restaurant;
   }

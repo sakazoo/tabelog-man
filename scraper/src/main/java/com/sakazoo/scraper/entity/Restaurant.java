@@ -3,6 +3,7 @@ package com.sakazoo.scraper.entity;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 店舗情報
@@ -37,6 +38,10 @@ public class Restaurant {
   // レビュー件数
   @Column
   private int reviews;
+
+  // 登録日付
+  @Column(name = "register_date", updatable = false)
+  private Date registerDate;
 
   public Long getId() {
     return id;
@@ -84,6 +89,14 @@ public class Restaurant {
 
   public void setStation(String station) {
     this.station = station;
+  }
+
+  public Date getRegisterDate() {
+    return registerDate;
+  }
+
+  public void setRegisterDate(Date registerDate) {
+    this.registerDate = registerDate;
   }
 
   public String toString(){

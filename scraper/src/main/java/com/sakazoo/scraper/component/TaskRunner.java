@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class TaskRunner {
@@ -15,12 +15,13 @@ public class TaskRunner {
   private ScrapingService scrapingService;
 
   private int i = 0;
-  private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+  private static final DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
   //  @Scheduled(cron = "${cron.cron1}")
   @Scheduled(initialDelay=0, fixedDelay=60000)
   public void execute() {
-    System.out.println("実行回数: " + ++i + ", 実行時間: " + sdf.format(new Date()));
+    LocalDateTime dateTime = LocalDateTime.now();
+    System.out.println("データ収集開始: " + dateTime.format(f));
     scrapingService.scrapeTabelog();
   }
 }
