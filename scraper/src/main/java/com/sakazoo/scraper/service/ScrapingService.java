@@ -6,9 +6,11 @@ import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.sakazoo.scraper.entity.Restaurant;
 import com.sakazoo.scraper.page.TabelogPage;
+import com.sakazoo.scraper.repository.RestaurantRepository;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -23,16 +25,21 @@ public class ScrapingService {
 
   private final static Logger logger = LoggerFactory.getLogger(ScrapingService.class);
 
+  @Autowired
+  private RestaurantRepository restaurantRepository;
+
   @PostConstruct
   public void init() {
     // ChromeHeadlessを有効にする
     Configuration.browser = WebDriverRunner.CHROME;
     Configuration.headless = true;
+
     Configuration.browserSize = "1024x768";
   }
 
   public void scrapeTabelog(){
-    TabelogPage tabelogPage = open("https://tabelog.com/tokyo/rstLst/gyouza/59/", TabelogPage.class);
+    // TODO: 全データを取得すると時間がかかるので最終ページのみ取得
+    TabelogPage tabelogPage = open("https://tabelog.com/tokyo/rstLst/gyouza/60/", TabelogPage.class);
     ElementsCollection elements = tabelogPage.results();
     List<Restaurant> restaurantList = new ArrayList<>();
     logger.info(tabelogPage.count().innerText());
@@ -48,6 +55,10 @@ public class ScrapingService {
         Restaurant restaurant = createRestaurant(element);
         restaurantList.add(restaurant);
       }
+    }
+    if(restaurantList.isEmpty() == false){
+      restaurantRepository.saveAll(restaurantList);
+      logger.info(restaurantList.size() + "件のデータを登録しました。");
     }
   }
 
